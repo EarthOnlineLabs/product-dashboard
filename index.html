@@ -1,0 +1,278 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>EarthOnline Labs — 产品状态透视</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500..700&family=Noto+Serif+SC:wght@500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --serif:'Songti SC','STSong','Noto Serif SC',Georgia,serif;
+  --sans:'PingFang SC','Noto Sans SC','Microsoft YaHei',sans-serif;
+  --fraunces:'Fraunces','Songti SC','Noto Serif SC',serif;
+  --mono:'JetBrains Mono',ui-monospace,Menlo,monospace;
+  --paper:#FFFFFF;--ink:#1B1B1B;--soft:#5A5C5E;--muted:#9CA0A2;
+  --rule:#ECECEB;--rule-strong:#DBDBDA;--card:#FAFAF9;
+  --a-purple:#8A43E6;--a-blue:#4FA8F0;--a-green:#1FA45D;--a-orange:#F4811E;--a-coral:#E8482A;
+  --t-purple:#DEC9F5;--t-blue:#D2E9FB;--t-green:#ACE7C4;--t-orange:#FBD6A0;--t-coral:#F8C9BD;
+  --ok:#2E7D46;--warn:#C2902E;--err:#C0492B;
+  --r-card:14px;--r-pill:999px;
+  --sh-sm:0 1px 2px rgba(20,20,20,.08);--sh-raise:0 3px 10px rgba(27,27,27,.22);
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-font-smoothing:antialiased}
+html{font-size:16px}
+body{background:var(--paper);color:var(--ink);font-family:var(--serif);line-height:1.6}
+.doc{max-width:900px;margin:0 auto;padding:46px 30px 80px}
+@media(max-width:640px){.doc{padding:30px 18px 60px}}
+
+.header{display:flex;align-items:center;gap:14px;border-bottom:2px solid var(--ink);padding-bottom:16px;margin-bottom:8px}
+.header svg{width:36px;height:20px;flex:none}
+.header h1{font-family:var(--fraunces);font-weight:700;font-size:22px;line-height:1.3}
+.subtitle{font-size:13px;color:var(--soft);margin-bottom:32px}
+.subtitle .ts{font-family:var(--mono);font-size:11px;color:var(--muted)}
+
+.stage-legend{
+  display:flex;gap:0;margin-bottom:28px;
+  background:var(--card);border:1px solid var(--rule);border-radius:var(--r-card);overflow:hidden;
+  box-shadow:var(--sh-sm);
+}
+.stage-legend-item{flex:1;padding:14px 10px;text-align:center;border-right:1px solid var(--rule)}
+.stage-legend-item:last-child{border-right:none}
+.stage-num{font-family:var(--mono);font-size:20px;font-weight:700;margin-bottom:3px}
+.stage-label{font-family:var(--sans);font-size:12px;font-weight:600;color:var(--ink)}
+.stage-sub{font-family:var(--sans);font-size:10px;color:var(--muted);margin-top:2px}
+
+.product-list{display:flex;flex-direction:column;gap:10px}
+.product-row{
+  background:var(--card);border:1px solid var(--rule);border-radius:var(--r-card);
+  padding:16px 20px;box-shadow:var(--sh-sm);transition:border-color .2s;
+}
+.product-row:hover{border-color:var(--ink)}
+.product-row.flagship{border-left:3px solid var(--a-purple)}
+
+.row-top{display:flex;align-items:center;gap:10px;margin-bottom:10px;flex-wrap:wrap}
+.product-name{font-family:var(--fraunces);font-size:15px;font-weight:600;min-width:130px}
+.product-name a{color:var(--ink);text-decoration:none;border-bottom:1px solid transparent}
+.product-name a:hover{border-bottom-color:var(--ink)}
+.meta-tag{
+  font-family:var(--mono);font-size:10px;color:var(--soft);letter-spacing:.02em;
+  background:var(--rule);border-radius:var(--r-pill);padding:2px 9px;
+}
+.product-desc{font-size:12px;color:var(--muted);margin-left:auto;text-align:right;max-width:340px}
+
+.pipeline{display:flex;gap:4px}
+.stage{flex:1;position:relative}
+.stage-bar{
+  height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;
+  font-family:var(--mono);font-size:11px;font-weight:600;cursor:default;
+  transition:all .15s;
+}
+.stage-bar:hover{transform:translateY(-1px);box-shadow:var(--sh-sm)}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.65}}
+
+.warning{font-family:var(--sans);font-size:11px;color:var(--err);margin-top:8px;padding-left:2px}
+
+.summary{
+  margin-top:28px;padding:18px 20px;
+  background:var(--card);border:1px solid var(--rule);border-radius:var(--r-card);box-shadow:var(--sh-sm);
+}
+.summary-title{
+  font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--err);font-weight:700;margin-bottom:10px;
+}
+.summary p{font-family:var(--sans);font-size:13px;color:var(--soft);line-height:1.7;margin-bottom:4px}
+.summary strong{color:var(--ink)}
+
+.legend-bar{
+  display:flex;gap:14px;flex-wrap:wrap;margin-top:20px;padding-top:14px;border-top:1px solid var(--rule);
+  font-family:var(--mono);font-size:10px;color:var(--muted);
+}
+.legend-bar .dot{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:4px;vertical-align:middle}
+
+.footer{margin-top:24px;font-family:var(--mono);font-size:10px;color:var(--muted);text-align:center}
+
+@media(max-width:640px){
+  .product-desc{display:none}
+  .product-name{min-width:100px}
+  .stage-bar{font-size:9px;height:30px}
+  .stage-legend-item{padding:10px 6px}
+  .stage-num{font-size:16px}
+}
+</style>
+</head>
+<body>
+<div class="doc">
+
+<div class="header">
+  <svg viewBox="0 0 100 56" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="EarthOnline Labs">
+    <defs><linearGradient id="sp" x1="16" y1="0" x2="84" y2="0" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#8A43E6"/><stop offset=".2" stop-color="#8A43E6"/>
+      <stop offset=".2" stop-color="#4FA8F0"/><stop offset=".4" stop-color="#4FA8F0"/>
+      <stop offset=".4" stop-color="#1FA45D"/><stop offset=".6" stop-color="#1FA45D"/>
+      <stop offset=".6" stop-color="#F4811E"/><stop offset=".8" stop-color="#F4811E"/>
+      <stop offset=".8" stop-color="#E8482A"/><stop offset="1" stop-color="#E8482A"/>
+    </linearGradient></defs>
+    <path d="M50 28 C 42 15, 18 15, 18 28 C 18 41, 42 41, 50 28 C 58 15, 82 15, 82 28 C 82 41, 58 41, 50 28 Z" stroke="url(#sp)" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
+  </svg>
+  <h1>产品状态透视</h1>
+</div>
+<p class="subtitle">EarthOnline Labs 对外产品 · <span class="ts">生成于 2026-06-25 · python3 tools/product-dashboard/generate.py</span></p>
+
+<div class="stage-legend">
+      <div class="stage-legend-item">
+        <div class="stage-num" style="color:#8A43E6">1</div>
+        <div class="stage-label">Idea</div>
+        <div class="stage-sub">有想法</div>
+      </div>
+      <div class="stage-legend-item">
+        <div class="stage-num" style="color:#4FA8F0">2</div>
+        <div class="stage-label">PBN 模型</div>
+        <div class="stage-sub">构建严格的 PBN 模型</div>
+      </div>
+      <div class="stage-legend-item">
+        <div class="stage-num" style="color:#1FA45D">3</div>
+        <div class="stage-label">产品完成</div>
+        <div class="stage-sub">确认形态 + 开发完成</div>
+      </div>
+      <div class="stage-legend-item">
+        <div class="stage-num" style="color:#F4811E">4</div>
+        <div class="stage-label">Launch 策略</div>
+        <div class="stage-sub">有效的上线计划</div>
+      </div>
+      <div class="stage-legend-item">
+        <div class="stage-num" style="color:#E8482A">5</div>
+        <div class="stage-label">Launch + PBN</div>
+        <div class="stage-sub">成功上线 + 验证 PBN 假设</div>
+      </div>
+</div>
+
+<div class="product-list">
+    <div class="product-row flagship">
+      <div class="row-top">
+        <div class="product-name"><a href="https://github.com/EarthOnlineLabs/aiself">aiself</a> <span style="font-family:var(--mono);font-size:10px;color:var(--a-purple);font-weight:700">旗舰</span></div>
+        <span class="meta-tag">网页产品（将来含 MCP skills）</span>
+        <span class="product-desc">个人认知系统——帮人认识自己 / 管理人生的 AI。你的个人 Wiki，随身携带用于所有 AI 产品，成长教练持续孵化自我认知。</span>
+      </div>
+      <div class="pipeline"><div class="stage"><div class="stage-bar" style="background:#E9F3EC; color:#2E7D46; border:1px solid #c8e0cd;" title="产品设计 18 份">1 ✓</div></div>
+<div class="stage"><div class="stage-bar" style="background:#FBF3E2; color:#C2902E; border:1px solid #eadcb5;animation:pulse 2s ease-in-out infinite;" title="有 PBN 文档但人类未确认">2 草稿</div></div>
+<div class="stage"><div class="stage-bar" style="background:#FBF3E2; color:#C2902E; border:1px solid #eadcb5;animation:pulse 2s ease-in-out infinite;" title="开发中">3 进行中</div></div>
+<div class="stage"><div class="stage-bar" style="background:#FAFAF9; color:#9CA0A2; border:1px dashed #DBDBDA;">4</div></div>
+<div class="stage"><div class="stage-bar" style="background:#FAFAF9; color:#9CA0A2; border:1px dashed #DBDBDA;">5</div></div>
+</div>
+      
+    </div>
+
+    <div class="product-row">
+      <div class="row-top">
+        <div class="product-name"><a href="https://github.com/EarthOnlineLabs/claude-gauge">Claude Gauge</a></div>
+        <span class="meta-tag">Mac 菜单栏应用</span><span class="meta-tag">Rik + Suke</span>
+        <span class="product-desc">常驻菜单栏的 Claude 额度和新消息提醒，简单安全。</span>
+      </div>
+      <div class="pipeline"><div class="stage"><div class="stage-bar" style="background:#E9F3EC; color:#2E7D46; border:1px solid #c8e0cd;" title="有想法，已建目录">1 ✓</div></div>
+<div class="stage"><div class="stage-bar" style="background:#FBECE9; color:#C0492B; border:1px solid #ecc9c3;" title="没有 PBN 文档">2 ⚠</div></div>
+<div class="stage"><div class="stage-bar" style="background:#E9F3EC; color:#2E7D46; border:1px solid #c8e0cd;" title="已上线">3 ✓</div></div>
+<div class="stage"><div class="stage-bar" style="background:#FBECE9; color:#C0492B; border:1px solid #ecc9c3;" title="渠道/拉新/反馈/迭代/收费全「待排」">4 ⚠</div></div>
+<div class="stage"><div class="stage-bar" style="background:#FAFAF9; color:#9CA0A2; border:1px dashed #DBDBDA;">5</div></div>
+</div>
+      <div class="warning">没有 PBN 模型就开始开发  ·  launch 策略未排  ·  产品不稳定</div>
+    </div>
+
+    <div class="product-row">
+      <div class="row-top">
+        <div class="product-name"><a href="https://github.com/EarthOnlineLabs/crypto-context">CryptoContext</a></div>
+        <span class="meta-tag">网页工具 + MCP skills</span><span class="meta-tag">Rik + Suke</span>
+        <span class="product-desc">加密资产 / portfolio 汇集一处，投资者画像随身携带、用于所有 AI 产品，开源只读。</span>
+      </div>
+      <div class="pipeline"><div class="stage"><div class="stage-bar" style="background:#E9F3EC; color:#2E7D46; border:1px solid #c8e0cd;" title="有想法，已建目录">1 ✓</div></div>
+<div class="stage"><div class="stage-bar" style="background:#FBECE9; color:#C0492B; border:1px solid #ecc9c3;" title="没有 PBN 文档">2 ⚠</div></div>
+<div class="stage"><div class="stage-bar" style="background:#FBF3E2; color:#C2902E; border:1px solid #eadcb5;animation:pulse 2s ease-in-out infinite;" title="开发中">3 进行中</div></div>
+<div class="stage"><div class="stage-bar" style="background:#FAFAF9; color:#9CA0A2; border:1px dashed #DBDBDA;">4</div></div>
+<div class="stage"><div class="stage-bar" style="background:#FAFAF9; color:#9CA0A2; border:1px dashed #DBDBDA;">5</div></div>
+</div>
+      <div class="warning">没有 PBN 模型就开始开发</div>
+    </div>
+
+    <div class="product-row">
+      <div class="row-top">
+        <div class="product-name"><a href="https://github.com/EarthOnlineLabs/hypecheck">HypeCheck</a></div>
+        <span class="meta-tag">Chrome 插件</span><span class="meta-tag">Rik + Suke</span>
+        <span class="product-desc">检查 GitHub 仓库 About / README 描述是否名实相符。只评"名实相符"，不碰刷星 / 造假指控。</span>
+      </div>
+      <div class="pipeline"><div class="stage"><div class="stage-bar" style="background:#E9F3EC; color:#2E7D46; border:1px solid #c8e0cd;" title="有想法，已建目录">1 ✓</div></div>
+<div class="stage"><div class="stage-bar" style="background:#FBECE9; color:#C0492B; border:1px solid #ecc9c3;" title="没有 PBN 文档">2 ⚠</div></div>
+<div class="stage"><div class="stage-bar" style="background:#FBF3E2; color:#C2902E; border:1px solid #eadcb5;animation:pulse 2s ease-in-out infinite;" title="开发中">3 进行中</div></div>
+<div class="stage"><div class="stage-bar" style="background:#FAFAF9; color:#9CA0A2; border:1px dashed #DBDBDA;">4</div></div>
+<div class="stage"><div class="stage-bar" style="background:#FAFAF9; color:#9CA0A2; border:1px dashed #DBDBDA;">5</div></div>
+</div>
+      <div class="warning">没有 PBN 模型就开始开发</div>
+    </div>
+
+    <div class="product-row">
+      <div class="row-top">
+        <div class="product-name">硅谈</div>
+        <span class="meta-tag">Web 应用</span><span class="meta-tag">Rik + Suke</span>
+        <span class="product-desc">AI 访谈主持人——坐下来就能被 AI 深度访谈，聊完自动变成可分享的视频播客。</span>
+      </div>
+      <div class="pipeline"><div class="stage"><div class="stage-bar" style="background:#E9F3EC; color:#2E7D46; border:1px solid #c8e0cd;" title="产品设计 2 份">1 ✓</div></div>
+<div class="stage"><div class="stage-bar" style="background:#FBF3E2; color:#C2902E; border:1px solid #eadcb5;animation:pulse 2s ease-in-out infinite;" title="有 PBN 文档但人类未确认">2 草稿</div></div>
+<div class="stage"><div class="stage-bar" style="background:#FAFAF9; color:#9CA0A2; border:1px dashed #DBDBDA;">3</div></div>
+<div class="stage"><div class="stage-bar" style="background:#FAFAF9; color:#9CA0A2; border:1px dashed #DBDBDA;">4</div></div>
+<div class="stage"><div class="stage-bar" style="background:#FAFAF9; color:#9CA0A2; border:1px dashed #DBDBDA;">5</div></div>
+</div>
+      
+    </div>
+
+    <div class="product-row">
+      <div class="row-top">
+        <div class="product-name">Claude Prompt 暂存器</div>
+        <span class="meta-tag">Claude 客户端插件（客户端 / 终端待定）</span><span class="meta-tag">Rik + Suke</span>
+        <span class="product-desc">在 Claude Code 里暂存多条 prompt，等它执行时可继续撰写、一键发到输入框（增删改）。</span>
+      </div>
+      <div class="pipeline"><div class="stage"><div class="stage-bar" style="background:#E9F3EC; color:#2E7D46; border:1px solid #c8e0cd;" title="有想法，已建目录">1 ✓</div></div>
+<div class="stage"><div class="stage-bar" style="background:#FAFAF9; color:#9CA0A2; border:1px dashed #DBDBDA;">2</div></div>
+<div class="stage"><div class="stage-bar" style="background:#FAFAF9; color:#9CA0A2; border:1px dashed #DBDBDA;">3</div></div>
+<div class="stage"><div class="stage-bar" style="background:#FAFAF9; color:#9CA0A2; border:1px dashed #DBDBDA;">4</div></div>
+<div class="stage"><div class="stage-bar" style="background:#FAFAF9; color:#9CA0A2; border:1px dashed #DBDBDA;">5</div></div>
+</div>
+      
+    </div>
+
+    <div class="product-row">
+      <div class="row-top">
+        <div class="product-name">Claude 等待小游戏（及套装）</div>
+        <span class="meta-tag">待定</span><span class="meta-tag">Rik + Suke</span>
+        <span class="product-desc">Claude 等待时玩的小游戏 + 套装。延伸：等待期插件可支持多种"放松 / 微练习"形式。</span>
+      </div>
+      <div class="pipeline"><div class="stage"><div class="stage-bar" style="background:#FAFAF9; color:#DBDBDA; border:1px dashed #ECECEB;" title="完全没开始">1 —</div></div>
+<div class="stage"><div class="stage-bar" style="background:#FAFAF9; color:#9CA0A2; border:1px dashed #DBDBDA;">2</div></div>
+<div class="stage"><div class="stage-bar" style="background:#FAFAF9; color:#9CA0A2; border:1px dashed #DBDBDA;">3</div></div>
+<div class="stage"><div class="stage-bar" style="background:#FAFAF9; color:#9CA0A2; border:1px dashed #DBDBDA;">4</div></div>
+<div class="stage"><div class="stage-bar" style="background:#FAFAF9; color:#9CA0A2; border:1px dashed #DBDBDA;">5</div></div>
+</div>
+      
+    </div>
+</div>
+
+<div class="summary">
+  <div class="summary-title">全局诊断</div>
+  <p><strong>0/7</strong> 产品走完了全部 5 个阶段。</p>
+<p>最远的是 <strong>aiself</strong>（阶段 3）。</p>
+<p><strong>5/7</strong> 产品没有已确认的 PBN 模型。</p>
+<p>2 个有 PBN 草稿但人类未确认。</p>
+<p>3 个没有 PBN 文档就开始了开发。</p>
+</div>
+
+<div class="legend-bar">
+  <span><span class="dot" style="background:#E9F3EC;border:1px solid #c8e0cd"></span>完成</span>
+  <span><span class="dot" style="background:#FBF3E2;border:1px solid #eadcb5"></span>草稿 / 进行中</span>
+  <span><span class="dot" style="background:#FBECE9;border:1px solid #ecc9c3"></span>跳过 / 问题</span>
+  <span><span class="dot" style="background:#FAFAF9;border:1px dashed #DBDBDA"></span>未开始</span>
+</div>
+
+<div class="footer">鼠标悬停阶段条可看详情</div>
+
+</div>
+</body>
+</html>
