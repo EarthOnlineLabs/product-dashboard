@@ -33,6 +33,11 @@ body{background:var(--paper);color:var(--ink);font-family:var(--serif);line-heig
 .subtitle{font-size:13px;color:var(--soft);margin-bottom:32px}
 .subtitle .ts{font-family:var(--mono);font-size:11px;color:var(--muted)}
 
+.nav{display:flex;gap:8px;margin-bottom:28px;font-family:var(--sans);font-size:12px}
+.nav a{color:var(--soft);text-decoration:none;padding:4px 12px;border-radius:var(--r-pill);border:1px solid var(--rule);transition:all .15s}
+.nav a:hover{border-color:var(--ink);color:var(--ink)}
+.nav a.active{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+
 .stage-legend{
   display:flex;gap:0;margin-bottom:28px;
   background:var(--card);border:1px solid var(--rule);border-radius:var(--r-card);overflow:hidden;
@@ -119,6 +124,11 @@ body{background:var(--paper);color:var(--ink);font-family:var(--serif);line-heig
   <h1>产品状态透视</h1>
 </div>
 <p class="subtitle">EarthOnline Labs 对外产品 · <span class="ts">生成于 2026-06-26 · python3 tools/product-dashboard/generate.py</span></p>
+
+<div class="nav">
+  <a href="/" class="active">产品状态</a>
+  <a href="/skills">Skills 清单</a>
+</div>
 
 <div class="stage-legend">
       <div class="stage-legend-item">

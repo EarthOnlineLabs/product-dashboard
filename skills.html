@@ -1,0 +1,498 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>EarthOnline Labs — Skills 清单</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500..700&family=Noto+Serif+SC:wght@500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --serif:'Songti SC','STSong','Noto Serif SC',Georgia,serif;
+  --sans:'PingFang SC','Noto Sans SC','Microsoft YaHei',sans-serif;
+  --fraunces:'Fraunces','Songti SC','Noto Serif SC',serif;
+  --mono:'JetBrains Mono',ui-monospace,Menlo,monospace;
+  --paper:#FFFFFF;--ink:#1B1B1B;--soft:#5A5C5E;--muted:#9CA0A2;
+  --rule:#ECECEB;--rule-strong:#DBDBDA;--card:#FAFAF9;
+  --a-purple:#8A43E6;--a-blue:#4FA8F0;--a-green:#1FA45D;--a-orange:#F4811E;--a-coral:#E8482A;
+  --t-purple:#DEC9F5;--t-blue:#D2E9FB;--t-green:#ACE7C4;--t-orange:#FBD6A0;--t-coral:#F8C9BD;
+  --ok:#2E7D46;--warn:#C2902E;--err:#C0492B;
+  --r-card:14px;--r-pill:999px;
+  --sh-sm:0 1px 2px rgba(20,20,20,.08);--sh-raise:0 3px 10px rgba(27,27,27,.22);
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-font-smoothing:antialiased}
+html{font-size:16px}
+body{background:var(--paper);color:var(--ink);font-family:var(--serif);line-height:1.6}
+.doc{max-width:900px;margin:0 auto;padding:46px 30px 80px}
+@media(max-width:640px){.doc{padding:30px 18px 60px}}
+
+.header{display:flex;align-items:center;gap:14px;border-bottom:2px solid var(--ink);padding-bottom:16px;margin-bottom:8px}
+.header svg{width:36px;height:20px;flex:none}
+.header h1{font-family:var(--fraunces);font-weight:700;font-size:22px;line-height:1.3}
+.subtitle{font-size:13px;color:var(--soft);margin-bottom:24px}
+.subtitle .ts{font-family:var(--mono);font-size:11px;color:var(--muted)}
+
+.nav{display:flex;gap:8px;margin-bottom:28px;font-family:var(--sans);font-size:12px}
+.nav a{color:var(--soft);text-decoration:none;padding:4px 12px;border-radius:var(--r-pill);border:1px solid var(--rule);transition:all .15s}
+.nav a:hover{border-color:var(--ink);color:var(--ink)}
+.nav a.active{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+
+.stats-row{
+  display:flex;gap:12px;margin-bottom:28px;flex-wrap:wrap;
+}
+.stat-card{
+  flex:1;min-width:120px;
+  background:var(--card);border:1px solid var(--rule);border-radius:var(--r-card);
+  padding:16px 18px;box-shadow:var(--sh-sm);text-align:center;
+}
+.stat-num{font-family:var(--mono);font-size:28px;font-weight:700;line-height:1.2}
+.stat-label{font-family:var(--sans);font-size:11px;color:var(--muted);margin-top:4px}
+
+.category{margin-bottom:20px}
+.cat-header{
+  display:flex;align-items:center;gap:10px;margin-bottom:8px;
+  padding:10px 0;border-bottom:1px solid var(--rule);
+}
+.cat-dot{width:8px;height:8px;border-radius:50%;flex:none}
+.cat-title{font-family:var(--fraunces);font-size:15px;font-weight:600}
+.cat-count{font-family:var(--mono);font-size:10px;color:var(--muted)}
+.cat-scope{font-family:var(--mono);font-size:9px;color:var(--paper);background:var(--a-purple);border-radius:var(--r-pill);padding:1px 7px;margin-left:auto}
+
+.skill-grid{display:flex;flex-direction:column;gap:4px;margin-bottom:8px}
+.skill-row{
+  display:flex;align-items:baseline;gap:10px;
+  padding:8px 14px;border-radius:8px;
+  transition:background .12s;
+}
+.skill-row:hover{background:var(--card)}
+.skill-name{
+  font-family:var(--mono);font-size:12px;font-weight:600;color:var(--ink);
+  min-width:200px;flex:none;
+}
+.skill-desc{font-family:var(--sans);font-size:12px;color:var(--soft);line-height:1.5}
+.skill-scope{
+  font-family:var(--mono);font-size:9px;color:var(--muted);
+  border:1px solid var(--rule);border-radius:var(--r-pill);padding:1px 6px;
+  flex:none;margin-left:auto;white-space:nowrap;
+}
+
+.footer{margin-top:24px;font-family:var(--mono);font-size:10px;color:var(--muted);text-align:center}
+
+@media(max-width:640px){
+  .skill-name{min-width:140px;font-size:11px}
+  .skill-desc{font-size:11px}
+  .skill-scope{display:none}
+  .stat-card{min-width:80px;padding:12px}
+  .stat-num{font-size:22px}
+}
+</style>
+</head>
+<body>
+<div class="doc">
+
+<div class="header">
+  <svg viewBox="0 0 100 56" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="EarthOnline Labs">
+    <defs><linearGradient id="sp" x1="16" y1="0" x2="84" y2="0" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#8A43E6"/><stop offset=".2" stop-color="#8A43E6"/>
+      <stop offset=".2" stop-color="#4FA8F0"/><stop offset=".4" stop-color="#4FA8F0"/>
+      <stop offset=".4" stop-color="#1FA45D"/><stop offset=".6" stop-color="#1FA45D"/>
+      <stop offset=".6" stop-color="#F4811E"/><stop offset=".8" stop-color="#F4811E"/>
+      <stop offset=".8" stop-color="#E8482A"/><stop offset="1" stop-color="#E8482A"/>
+    </linearGradient></defs>
+    <path d="M50 28 C 42 15, 18 15, 18 28 C 18 41, 42 41, 50 28 C 58 15, 82 15, 82 28 C 82 41, 58 41, 50 28 Z" stroke="url(#sp)" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
+  </svg>
+  <h1>Skills 清单</h1>
+</div>
+<p class="subtitle">Claude Code 本地技能库 · <span class="ts">2026-06-26</span></p>
+
+<div class="nav">
+  <a href="/">产品状态</a>
+  <a href="/skills" class="active">Skills 清单</a>
+</div>
+
+<div class="stats-row">
+  <div class="stat-card">
+    <div class="stat-num" style="color:var(--a-purple)">55</div>
+    <div class="stat-label">总 Skills</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-num" style="color:var(--a-blue)">50</div>
+    <div class="stat-label">全局 Skills</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-num" style="color:var(--a-green)">5</div>
+    <div class="stat-label">项目级 Skills</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-num" style="color:var(--a-orange)">8</div>
+    <div class="stat-label">分类</div>
+  </div>
+</div>
+
+<!-- ── 创作 / 发布 ── -->
+<div class="category">
+  <div class="cat-header">
+    <span class="cat-dot" style="background:var(--a-coral)"></span>
+    <span class="cat-title">创作 / 发布</span>
+    <span class="cat-count">16 skills</span>
+  </div>
+  <div class="skill-grid">
+    <div class="skill-row">
+      <span class="skill-name">baoyu-image-gen</span>
+      <span class="skill-desc">AI 图片生成（OpenAI / Google / DashScope），支持参考图、多尺寸</span>
+    </div>
+    <div class="skill-row">
+      <span class="skill-name">baoyu-cover-image</span>
+      <span class="skill-desc">文章封面图生成，5 维度组合（类型 / 配色 / 渲染 / 文字 / 情绪）</span>
+    </div>
+    <div class="skill-row">
+      <span class="skill-name">baoyu-article-illustrator</span>
+      <span class="skill-desc">分析文章结构，自动插入配图位置并生成插图</span>
+    </div>
+    <div class="skill-row">
+      <span class="skill-name">baoyu-comic</span>
+      <span class="skill-desc">知识漫画 / 教育漫画生成器，多画风 + 分镜排版</span>
+    </div>
+    <div class="skill-row">
+      <span class="skill-name">baoyu-infographic</span>
+      <span class="skill-desc">信息图生成，20 种布局 + 17 种视觉风格</span>
+    </div>
+    <div class="skill-row">
+      <span class="skill-name">baoyu-slide-deck</span>
+      <span class="skill-desc">从内容生成演示幻灯片图片</span>
+    </div>
+    <div class="skill-row">
+      <span class="skill-name">baoyu-xhs-images</span>
+      <span class="skill-desc">小红书风格信息图系列，10 种视觉风格 + 8 种布局</span>
+    </div>
+    <div class="skill-row">
+      <span class="skill-name">baoyu-compress-image</span>
+      <span class="skill-desc">图片压缩为 WebP/PNG</span>
+    </div>
+    <div class="skill-row">
+      <span class="skill-name">baoyu-post-to-wechat</span>
+      <span class="skill-desc">发布微信公众号（文章 / 图文），API + Chrome CDP</span>
+    </div>
+    <div class="skill-row">
+      <span class="skill-name">baoyu-post-to-x</span>
+      <span class="skill-desc">发布 X/Twitter（帖子 / 长文），Chrome CDP 绕反自动化</span>
+    </div>
+    <div class="skill-row">
+      <span class="skill-name">baoyu-markdown-to-html</span>
+      <span class="skill-desc">Markdown 转微信兼容 HTML，含代码高亮 / 数学公式 / PlantUML</span>
+    </div>
+    <div class="skill-row">
+      <span class="skill-name">baoyu-format-markdown</span>
+      <span class="skill-desc">纯文本 / Markdown 格式美化（标题 / 加粗 / 列表 / 代码块）</span>
+    </div>
+    <div class="skill-row">
+      <span class="skill-name">baoyu-url-to-markdown</span>
+      <span class="skill-desc">网页抓取转 Markdown（Chrome CDP），支持需登录页面</span>
+    </div>
+    <div class="skill-row">
+      <span class="skill-name">baoyu-danger-x-to-markdown</span>
+      <span class="skill-desc">X/Twitter 推文转 Markdown + YAML frontmatter</span>
+    </div>
+    <div class="skill-row">
+      <span class="skill-name">posts-to-print</span>
+      <span class="skill-desc">社交媒体帖子合集转 A4 双栏印刷版 HTML</span>
+    </div>
+    <div class="skill-row">
+      <span class="skill-name">print-ready-html</span>
+      <span class="skill-desc">生成印刷级 HTML 排版</span>
+    </div>
+  </div>
+</div>
+
+<!-- ── AI / LLM 工具链 ── -->
+<div class="category">
+  <div class="cat-header">
+    <span class="cat-dot" style="background:var(--a-purple)"></span>
+    <span class="cat-title">AI / LLM 工具链</span>
+    <span class="cat-count">11 skills</span>
+  </div>
+  <div class="skill-grid">
+    <div class="skill-row">
+      <span class="skill-name">prompt-engineering</span>
+      <span class="skill-desc">Anthropic 官方提示工程最佳实践（XML 标签 / 角色框架 / 多示例）</span>
+    </div>
+    <div class="skill-row">
+      <span class="skill-name">building-with-llms</span>
+      <span class="skill-desc">60 位产品负责人的 110 条 LLM 构建经验</span>
+    </div>
+    <div class="skill-row">
+      <span class="skill-name">ai-evals</span>
+      <span class="skill-desc">AI 评估（evals）实战建议</span>
+    </div>
+    <div class="skill-row">
+      <span class="skill-name">eval-harness</span>
+      <span class="skill-desc">Claude Code 会话评估框架（EDD 评估驱动开发）</span>
+    </div>
+    <div class="skill-row">
+      <span class="skill-name">cost-aware-llm-pipeline</span>
+      <span class="skill-desc">LLM 成本优化——模型路由 / 预算追踪 / 重试逻辑 / 缓存</span>
+    </div>
+    <div class="skill-row">
+      <span class="skill-name">agent-memory-evolution</span>
+      <span class="skill-desc">自主 AI Agent 架构（Soul / Memory / Cron / 自我进化模块）</span>
+    </div>
+    <div class="skill-row">
+      <span class="skill-name">continuous-learning</span>
+      <span class="skill-desc">自动从 Claude Code 会话中提取可复用模式</span>
+    </div>
+    <div class="skill-row">
+      <span class="skill-name">continuous-learning-v2</span>
+      <span class="skill-desc">基于本能（Instinct）的学习系统，Hook 观测 + 置信度打分 + 进化</span>
+    </div>
+    <div class="skill-row">
+      <span class="skill-name">evo-skill</span>
+      <span class="skill-desc">AI Agent 自主进化引擎——对可衡量任务自主迭代直到精通</span>
+    </div>
+    <div class="skill-row">
+      <span class="skill-name">iterative-retrieval</span>
+      <span class="skill-desc">渐进式上下文检索，解决子代理上下文问题</span>
+    </div>
+    <div class="skill-row">
+      <span class="skill-name">regex-vs-llm-structured-text</span>
+      <span class="skill-desc">正则 vs LLM 解析结构化文本的决策框架</span>
+    </div>
+  </div>
+</div>
+
+<!-- ── 思维 / 方法论 ── -->
+<div class="category">
+  <div class="cat-header">
+    <span class="cat-dot" style="background:var(--a-orange)"></span>
+    <span class="cat-title">思维 / 方法论</span>
+    <span class="cat-count">7 skills</span>
+  </div>
+  <div class="skill-grid">
+    <div class="skill-row">
+      <span class="skill-name">high-agency</span>
+      <span class="skill-desc">高能动性思维框架——第一性原理、拒绝含糊、诚实评估</span>
+    </div>
+    <div class="skill-row">
+      <span class="skill-name">devils-advocate</span>
+      <span class="skill-desc">魔鬼代言人——反向论证、压力测试决策</span>
+    </div>
+    <div class="skill-row">
+      <span class="skill-name">brainstorming</span>
+      <span class="skill-desc">设计门禁——一问一答式对话 + 2-3 方案对比 + 分块设计评审</span>
+    </div>
+    <div class="skill-row">
+      <span class="skill-name">strategic-compact</span>
+      <span class="skill-desc">手动上下文压缩，在逻辑节点保留关键信息</span>
+    </div>
+    <div class="skill-row">
+      <span class="skill-name">meta-sourcing</span>
+      <span class="skill-desc">信息收集元思考——退后几步想：服务什么决策 / 谁第一手知道 / 怎么搜怎么验</span>
+    </div>
+    <div class="skill-row">
+      <span class="skill-name">info-intake</span>
+      <span class="skill-desc">信息摄入管理——选书 / ref 消化 / 陪读 / 读书收尾</span>
+    </div>
+    <div class="skill-row">
+      <span class="skill-name">verification-loop</span>
+      <span class="skill-desc">全面验证系统——多轮交叉验证确保正确性</span>
+    </div>
+  </div>
+</div>
+
+<!-- ── 调研 / 分析（项目级） ── -->
+<div class="category">
+  <div class="cat-header">
+    <span class="cat-dot" style="background:var(--a-green)"></span>
+    <span class="cat-title">调研 / 分析</span>
+    <span class="cat-count">4 skills</span>
+    <span class="cat-scope">AISELF-TEAM</span>
+  </div>
+  <div class="skill-grid">
+    <div class="skill-row">
+      <span class="skill-name">market-scan</span>
+      <span class="skill-desc">立项前市场扫描——找全竞品、逐个核实、判断空白</span>
+      <span class="skill-scope">项目级</span>
+    </div>
+    <div class="skill-row">
+      <span class="skill-name">idea-radar</span>
+      <span class="skill-desc">想法深度分析——反向找场景需求 / 验证 proven / 深挖产品 / 构造 PBN 地形</span>
+      <span class="skill-scope">项目级</span>
+    </div>
+    <div class="skill-row">
+      <span class="skill-name">humanizer-zh</span>
+      <span class="skill-desc">去除中文文本的 AI 生成痕迹，基于维基百科 AI 写作特征指南</span>
+      <span class="skill-scope">项目级</span>
+    </div>
+    <div class="skill-row">
+      <span class="skill-name">周会整理</span>
+      <span class="skill-desc">飞书妙记取录屏 → 提取文字 → 整理纪要 → 认领事项，全流程自动化</span>
+      <span class="skill-scope">项目级</span>
+    </div>
+  </div>
+</div>
+
+<!-- ── 前端开发 ── -->
+<div class="category">
+  <div class="cat-header">
+    <span class="cat-dot" style="background:var(--a-blue)"></span>
+    <span class="cat-title">前端开发</span>
+    <span class="cat-count">7 skills</span>
+  </div>
+  <div class="skill-grid">
+    <div class="skill-row">
+      <span class="skill-name">frontend-design</span>
+      <span class="skill-desc">高质量前端界面——避免 AI 通用美学，生成有辨识度的 UI</span>
+    </div>
+    <div class="skill-row">
+      <span class="skill-name">frontend-patterns</span>
+      <span class="skill-desc">React / Next.js / 状态管理 / 性能优化模式</span>
+    </div>
+    <div class="skill-row">
+      <span class="skill-name">vercel-react-best-practices</span>
+      <span class="skill-desc">Vercel 工程团队的 React/Next.js 性能优化指南</span>
+    </div>
+    <div class="skill-row">
+      <span class="skill-name">design-engineering</span>
+      <span class="skill-desc">设计工程实战经验</span>
+    </div>
+    <div class="skill-row">
+      <span class="skill-name">web-design-guidelines</span>
+      <span class="skill-desc">Web 界面设计规范审查（无障碍 / UX / 最佳实践）</span>
+    </div>
+    <div class="skill-row">
+      <span class="skill-name">content-hash-cache-pattern</span>
+      <span class="skill-desc">SHA-256 内容哈希缓存——路径无关、自动失效</span>
+    </div>
+    <div class="skill-row">
+      <span class="skill-name">seo-audit</span>
+      <span class="skill-desc">SEO 审计——技术 SEO / meta 标签 / 排名诊断</span>
+    </div>
+  </div>
+</div>
+
+<!-- ── 后端 / 数据库 / 运维 ── -->
+<div class="category">
+  <div class="cat-header">
+    <span class="cat-dot" style="background:#6B7280"></span>
+    <span class="cat-title">后端 / 数据库 / 运维</span>
+    <span class="cat-count">6 skills</span>
+  </div>
+  <div class="skill-grid">
+    <div class="skill-row">
+      <span class="skill-name">backend-patterns</span>
+      <span class="skill-desc">后端架构模式 / API 设计 / 数据库优化（Node.js / Express / Next.js）</span>
+    </div>
+    <div class="skill-row">
+      <span class="skill-name">api-design</span>
+      <span class="skill-desc">REST API 设计——资源命名 / 状态码 / 分页 / 版本控制 / 限速</span>
+    </div>
+    <div class="skill-row">
+      <span class="skill-name">postgres-patterns</span>
+      <span class="skill-desc">PostgreSQL 查询优化 / 索引 / 安全（Supabase 最佳实践）</span>
+    </div>
+    <div class="skill-row">
+      <span class="skill-name">database-migrations</span>
+      <span class="skill-desc">数据库迁移——Schema 变更 / 回滚 / 零停机部署</span>
+    </div>
+    <div class="skill-row">
+      <span class="skill-name">docker-patterns</span>
+      <span class="skill-desc">Docker / Docker Compose——本地开发 / 安全 / 网络 / 多服务编排</span>
+    </div>
+    <div class="skill-row">
+      <span class="skill-name">deployment-patterns</span>
+      <span class="skill-desc">CI/CD 流水线 / Docker 化 / 健康检查 / 回滚策略</span>
+    </div>
+  </div>
+</div>
+
+<!-- ── 测试 / 安全 / 质量 ── -->
+<div class="category">
+  <div class="cat-header">
+    <span class="cat-dot" style="background:var(--ok)"></span>
+    <span class="cat-title">测试 / 安全 / 质量</span>
+    <span class="cat-count">8 skills</span>
+  </div>
+  <div class="skill-grid">
+    <div class="skill-row">
+      <span class="skill-name">tdd-workflow</span>
+      <span class="skill-desc">TDD 工作流——先测试后实现，80%+ 覆盖率</span>
+    </div>
+    <div class="skill-row">
+      <span class="skill-name">e2e-testing</span>
+      <span class="skill-desc">Playwright E2E 测试——Page Object / CI 集成 / Flaky 策略</span>
+    </div>
+    <div class="skill-row">
+      <span class="skill-name">python-testing</span>
+      <span class="skill-desc">pytest 测试策略——Fixture / Mock / 参数化 / 覆盖率</span>
+    </div>
+    <div class="skill-row">
+      <span class="skill-name">coding-standards</span>
+      <span class="skill-desc">通用编码标准（TypeScript / JavaScript / React / Node.js）</span>
+    </div>
+    <div class="skill-row">
+      <span class="skill-name">security-review</span>
+      <span class="skill-desc">安全审查清单——认证 / 输入处理 / API / 支付 / 敏感数据</span>
+    </div>
+    <div class="skill-row">
+      <span class="skill-name">security-scan</span>
+      <span class="skill-desc">AgentShield 扫描 .claude/ 配置安全（注入风险 / 密钥泄露）</span>
+    </div>
+    <div class="skill-row">
+      <span class="skill-name">audit-website</span>
+      <span class="skill-desc">网站审计——SEO / 性能 / 安全等 15 类 230+ 规则</span>
+    </div>
+    <div class="skill-row">
+      <span class="skill-name">code-to-chinese</span>
+      <span class="skill-desc">源码转模块化中文伪代码——保留架构，替换语法为中文描述</span>
+    </div>
+  </div>
+</div>
+
+<!-- ── 语言 / 工具 / 集成 ── -->
+<div class="category">
+  <div class="cat-header">
+    <span class="cat-dot" style="background:var(--warn)"></span>
+    <span class="cat-title">语言 / 工具 / 集成</span>
+    <span class="cat-count">8 skills</span>
+  </div>
+  <div class="skill-grid">
+    <div class="skill-row">
+      <span class="skill-name">python-patterns</span>
+      <span class="skill-desc">Python 惯用法 / PEP 8 / 类型提示 / 健壮应用最佳实践</span>
+    </div>
+    <div class="skill-row">
+      <span class="skill-name">translation-en-to-zh</span>
+      <span class="skill-desc">英译中——反翻译腔规则（余光中 / Zinsser / Strunk & White）</span>
+    </div>
+    <div class="skill-row">
+      <span class="skill-name">baoyu-danger-gemini-web</span>
+      <span class="skill-desc">Gemini Web 逆向 API——文本生成 / 图片生成 / 视觉输入 / 多轮对话</span>
+    </div>
+    <div class="skill-row">
+      <span class="skill-name">atxp</span>
+      <span class="skill-desc">ATXP 付费 API——搜索 / AI 图片 / 音乐 / 视频 / X 搜索 / 邮件</span>
+    </div>
+    <div class="skill-row">
+      <span class="skill-name">clawdirect-dev</span>
+      <span class="skill-desc">Agent Web 开发模式——ATXP 认证 + Cookie Agent Auth</span>
+    </div>
+    <div class="skill-row">
+      <span class="skill-name">nutrient-document-processing</span>
+      <span class="skill-desc">文档处理 API——PDF / DOCX / XLSX 转换 / OCR / 签名 / 填表</span>
+    </div>
+    <div class="skill-row">
+      <span class="skill-name">find-skills</span>
+      <span class="skill-desc">发现并安装 Agent 技能</span>
+    </div>
+    <div class="skill-row">
+      <span class="skill-name">release-skills</span>
+      <span class="skill-desc">通用发布工作流——自动检测版本文件，支持多语言项目</span>
+    </div>
+  </div>
+</div>
+
+<div class="footer">EarthOnline Labs · 本地 Skills 清单</div>
+
+</div>
+</body>
+</html>
